@@ -3,11 +3,15 @@ package com.usergo.presentit.helpers;
 import android.content.Context;
 import android.util.Log;
 
+import com.appspot.yet_another_test_1261.presentIt.model.Course;
+import com.appspot.yet_another_test_1261.presentIt.model.CourseCollection;
+import com.appspot.yet_another_test_1261.presentIt.model.HelloClass;
 import com.appspot.yet_another_test_1261.presentIt.model.Person;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.usergo.presentit.Constants;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by sruth on 4/16/2016.
@@ -18,8 +22,11 @@ public class PresentItUtils {
 
     private static com.appspot.yet_another_test_1261.presentIt.PresentIt pApiServiceHandler;
 
+    public static String pemail;
+
     public static void build(Context context, String email) {
         pApiServiceHandler = buildServiceHandler(context, email);
+        pemail = email;
     }
 
     public static com.appspot.yet_another_test_1261.presentIt.PresentIt buildServiceHandler(
@@ -44,10 +51,41 @@ public class PresentItUtils {
         }
         Log.d(TAG, pApiServiceHandler.getRootUrl());
 
-        com.appspot.yet_another_test_1261.presentIt.PresentIt.GetPersonProfile getProfile =
-                pApiServiceHandler.getPersonProfile();
-        Person person = getProfile.execute();
-        Log.d(TAG, "person profile name-"+person.getFirstName());
+        Log.d(TAG, "pemail inside-" + pemail);
+        com.appspot.yet_another_test_1261.presentIt.PresentIt.GetPersonProfileAndroid getPersonProfileAndroid =
+                pApiServiceHandler.getPersonProfileAndroid(pemail);
+        Person person = getPersonProfileAndroid.execute();
+        Log.d(TAG, "person profile name-" + person.getFirstName());
         return person;
+    }
+
+    public static HelloClass saysHello() throws PresentItException, IOException {
+        if (null == pApiServiceHandler) {
+            Log.e(TAG, "getPersonProfile(): no service handler was built");
+            throw new PresentItException();
+        }
+        //pApiServiceHandler.
+        Log.d(TAG, pApiServiceHandler.getRootUrl());
+        Log.d(TAG, "person profile name before-");
+        com.appspot.yet_another_test_1261.presentIt.PresentIt.JustHelloWithTwoNames sayingHello =
+                pApiServiceHandler.justHelloWithTwoNames("sruthi", "anirudh");
+        HelloClass hc = sayingHello.execute();
+        Log.d(TAG, "person profile name-" + hc.getMessage());
+        return hc;
+    }
+
+    public static List<Course> getCoursesToAttend() throws PresentItException, IOException {
+        if (null == pApiServiceHandler) {
+            Log.e(TAG, "getCoursesToAttend(): no service handler was built");
+            throw new PresentItException();
+        }
+        Log.d(TAG, "pemail inside-"+pemail);
+        Log.d(TAG, "executing getCoursesToAttend()");
+
+        com.appspot.yet_another_test_1261.presentIt.PresentIt.GetCoursesCreatedAndroid getCoursesCreatedAndroid =
+                pApiServiceHandler.getCoursesCreatedAndroid(pemail);
+        List<Course> courses = getCoursesCreatedAndroid.execute().getItems();
+        Log.d(TAG, "person profile name-" + courses.size());
+        return courses;
     }
 }

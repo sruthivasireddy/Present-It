@@ -2,33 +2,24 @@ package com.usergo.presentit;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appspot.yet_another_test_1261.presentIt.model.Person;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -38,16 +29,13 @@ import com.google.android.gms.common.AccountPicker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.usergo.presentit.helpers.AccountUtils;
-import com.usergo.presentit.helpers.CoursesFragment;
-import com.usergo.presentit.helpers.PresentItException;
 import com.usergo.presentit.helpers.PresentItUtils;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
     private String pEmailAccount;
     private AuthorizationCheckTask pAuthTask;
+    private static final String TAG = "MainActivity";
 
     GoogleApiClient pGoogleApiClient;
     /* Request code used to invoke sign in user interactions. */
@@ -71,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_main);
 
         pEmailAccount = AccountUtils.getEmailAccount(this);
-        Log.i("mainactivity", "getemailaccount-" + pEmailAccount);
+        Log.i(TAG, "getemailaccount-" + pEmailAccount);
 
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
@@ -80,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Log.d("ERROR", null);
 
         mActivityTitle = "Profile";
-        // mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         getSupportActionBar().setTitle(mActivityTitle);
 
         addDrawerItems();
@@ -88,25 +75,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-//        ProfileFragment fragment = new ProfileFragment();
-//        Bundle args = new Bundle();
-//        //args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-//        fragment.setArguments(args);
-//
-//        // Insert the fragment by replacing any existing fragment
-//        FragmentManager fragmentManager = getFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.linearLayoutFragment, fragment)
-//                .commit();
-//
-//        // Highlight the selected item, update the title, and close the drawer
-//        mDrawerList.setItemChecked(0, true);
-//        mActivityTitle = mAdapter.getItem(0);
-//        mDrawerLayout.closeDrawer(mDrawerList);
-//        LayoutInflater inflater = getLayoutInflater();
-//        LinearLayout container = (LinearLayout) findViewById(R.id.linearLayoutFragment);
-//        inflater.inflate(R.layout.activity_main, container);
 
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
         tx.replace(R.id.main, ProfileFragment.newInstance(MainActivity.this));
@@ -139,16 +107,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         String[] menuArray = { "Profile", "Courses", "Classrooms" };
         mAdapter = new ArrayAdapter<>(this,R.layout.drawer_listview_item , menuArray);
         mDrawerList.setAdapter(mAdapter);
-
-        /* TODO: why to add these 2 lines */
         mDrawerList.bringToFront();
         mDrawerLayout.requestLayout();
-
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
     }
 
     private void signIn() {
-        Log.i("mainactivity", "pemailaccount-" + null + "entered signIn()");
+        Log.i(TAG, "pemailaccount-" + null + "entered signIn()");
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(pGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -221,13 +186,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Account[] accounts = AccountUtils.getGoogleAccounts(this);
        // String emailAccount = AccountUtils.getEmailAccount(this);
         int numOfAccount = accounts.length;
-        Log.i("selectAccount", "number of google accounts "+numOfAccount);
+        Log.i(TAG, "number of google accounts "+numOfAccount);
         switch (numOfAccount) {
             case 0:
                 // No accounts registered, nothing to do.
                 Toast.makeText(this, R.string.toast_no_google_accounts_registered,
                         Toast.LENGTH_LONG).show();
-    Log.i("mainactivity", "pemailaccount-" + null + "entering signIn()");
+                Log.i("mainactivity", "pemailaccount-" + null + "entering signIn()");
                 // Configure sign-in to request the user's ID, email address, and basic
                 // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
                 GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -275,16 +240,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d("STATE", "handleSignInResult:" + result.isSuccess());
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             if (acct != null) {
-                Log.i("MainActivity", "Authenticated Username:" + acct.getDisplayName());
+                Log.i(TAG, "Authenticated Username:" + acct.getDisplayName());
                 AccountUtils.saveEmailAccount(MainActivity.this, acct.getEmail());
             }
         } else {
-            Log.e("MainActivity", "Failed to authenticate user");
+            Log.e(TAG, "Failed to authenticate user");
             Toast.makeText(this, "Failed to authenticate user",
                     Toast.LENGTH_LONG).show();
         }
@@ -324,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         @Override
         protected Boolean doInBackground(String... emailAccounts) {
-            Log.i("MainActivity", "Background task started.");
+            Log.i(TAG, "Background task started.");
 
             if (!AccountUtils.checkGooglePlayServicesAvailable(MainActivity.this)) {
                 publishProgress(R.string.gms_not_available);
@@ -332,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
 
             String emailAccount = emailAccounts[0];
-            Log.i("backgroundmain", emailAccount);
+            Log.i(TAG, emailAccount);
             // Ensure only one task is running at a time.
             pAuthTask = this;
 
@@ -364,10 +329,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         protected void onPostExecute(Boolean success) {
             if (success) {
                 // Authorization check successful, get conferences.
-               // AccountUtils.build(MainActivity.this, pEmailAccount);
-                Log.i("MainActivity", "Email id - " + pEmailAccount);
-               // PresentItUtils.build(MainActivity.this, pEmailAccount);
-                //loadProfileDetails();
+                Log.i(TAG, "Email id - " + pEmailAccount);
+                PresentItUtils.build(MainActivity.this, pEmailAccount);
             } else {
                 // Authorization check unsuccessful.
                 pEmailAccount = null;
@@ -378,48 +341,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             pAuthTask = null;
         }
 
-//        private void loadProfileDetails() {
-//            try {
-//                Person user = PresentItUtils.getPersonProfile();
-//
-//                TextView txtUserName = (TextView) findViewById(R.id.user_display_name);
-//                txtUserName.setText(user.getFirstName() + " " + user.getLastName());
-//                TextView txtEmailAddress = (TextView) findViewById(R.id.user_email);
-//                txtEmailAddress.setText(user.getEmail());
-//                TextView txtUfid = (TextView) findViewById(R.id.user_ufid);
-//                txtUfid.setText(user.getUfid());
-//
-//            } catch (PresentItException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
         @Override
         protected void onCancelled() {
             pAuthTask = null;
         }
-    }//
+    }
 
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
-           // Toast.makeText(MainActivity.this, ((TextView)view).getText(), Toast.LENGTH_LONG).show();
-            //mDrawerLayout.closeDrawer(mDrawerList);
-//            LayoutInflater inflater = getLayoutInflater();
-//            LinearLayout container = (LinearLayout) findViewById(R.id.linearLayoutFragment);
-//            inflater.inflate(R.layout.activity_main, container);
-            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-            //Log.d("info", "enetred switch position" + position);
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             switch(position) {
                 case 0:
+                    mActivityTitle = "Profile";
                     tx.replace(R.id.main, ProfileFragment.newInstance(MainActivity.this));
                 break;
-                case 1: {
+                case 1:
+                    mActivityTitle = "Courses";
                     tx.replace(R.id.main, CoursesFragment.newInstance(MainActivity.this));
-                }
                 break;
                 default:
                     break;
@@ -427,25 +366,5 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             tx.commit();
             mDrawerLayout.closeDrawer(mDrawerList);
         }
-    }
-
-    /** Swaps fragments in the main content view */
-    private void selectItem(int position) {
-        // Create a new fragment and specify the planet to show based on position
-//        ProfileFragment fragment = new ProfileFragment();
-//        Bundle args = new Bundle();
-//        //args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
-//        fragment.setArguments(args);
-//
-//        // Insert the fragment by replacing any existing fragment
-//        FragmentManager fragmentManager = getFragmentManager();
-//        fragmentManager.beginTransaction()
-//                .replace(R.id.linearLayoutFragment, fragment)
-//                        .commit();
-//
-//        // Highlight the selected item, update the title, and close the drawer
-//        mDrawerList.setItemChecked(position, true);
-//        mActivityTitle = mAdapter.getItem(position);
-//        mDrawerLayout.closeDrawer(mDrawerList);
     }
 }

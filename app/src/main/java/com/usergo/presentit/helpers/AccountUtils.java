@@ -16,7 +16,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.usergo.presentit.R;
 
 /**
- * Created by sruth on 4/16/2016.
+ * Created by sruthi on 4/16/2016.
  */
 public class AccountUtils {
 

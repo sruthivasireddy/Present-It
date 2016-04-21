@@ -11,7 +11,7 @@
     <!-- the innner view - provides the pink rectangle -->
     <RelativeLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-        android:background="@drawable/customlistelement" >
+        android:background="@drawable/custom_list_element" >
         
         <!-- the icon view -->
     	<ImageView android:id="@+id/ivIcon"

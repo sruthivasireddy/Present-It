@@ -15,7 +15,10 @@
     <string name="action_clear_account">Clear Saved Account</string>
     <string name="reload">Reload</string>
 
+    <string name="title_activity_file_viewer">Files</string>
+
     <string name="select_account_for_access">Select the account to access PresentIt</string>
     <string name="toast_no_google_accounts_registered">No Google Accounts Registered</string>
     <string name="clear_account_message">Are you sure you want to clear the saved account? If you decide to do so, application will exit.</string>
+
 </resources>

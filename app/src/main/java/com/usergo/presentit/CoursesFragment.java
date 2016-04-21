@@ -65,10 +65,11 @@ public class CoursesFragment extends ListFragment {
         if(pCourses != null) {
             Course item = pCourses.get(position);
             Toast.makeText(getActivity(), item.getCourseName(), Toast.LENGTH_SHORT).show();
-//            Intent intent = new Intent(getActivity(), FileViewerActivity.class);
-//            intent.putExtra("COURSE_ID", item.getCourseId());
-//            intent.putExtra("COURSE_NAME", item.getCourseName());
-//            startActivity(intent);
+            Intent intent = new Intent(getActivity(), FileViewerActivity.class);
+            intent.putExtra("COURSE_ID", item.getCourseId());
+            intent.putExtra("COURSE_NAME", item.getCourseName());
+            intent.putExtra("COURSE_WEB_SAFE_KEY", item.getWebsafeKey());
+            startActivity(intent);
         }
     }
 

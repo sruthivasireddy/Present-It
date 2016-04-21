@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.appspot.yet_another_test_1261.presentIt.model.Course;
 import com.appspot.yet_another_test_1261.presentIt.model.CourseCollection;
+import com.appspot.yet_another_test_1261.presentIt.model.FileInfo;
 import com.appspot.yet_another_test_1261.presentIt.model.HelloClass;
 import com.appspot.yet_another_test_1261.presentIt.model.Person;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -87,5 +88,20 @@ public class PresentItUtils {
         List<Course> courses = getCoursesCreatedAndroid.execute().getItems();
         Log.d(TAG, "person profile name-" + courses.size());
         return courses;
+    }
+
+    public static List<FileInfo> getFiles(String webSafeKey) throws PresentItException, IOException {
+        if (null == pApiServiceHandler) {
+            Log.e(TAG, "getCoursesToAttend(): no service handler was built");
+            throw new PresentItException();
+        }
+        Log.d(TAG, "pemail inside-"+pemail);
+        Log.d(TAG, "executing getFiles()");
+
+        com.appspot.yet_another_test_1261.presentIt.PresentIt.GetFilesOfCourse getCoursesCreatedAndroid =
+                pApiServiceHandler.getFilesOfCourse(webSafeKey);
+        List<FileInfo> files = getCoursesCreatedAndroid.execute().getItems();
+        Log.d(TAG, "person profile name-" + files.size());
+        return files;
     }
 }

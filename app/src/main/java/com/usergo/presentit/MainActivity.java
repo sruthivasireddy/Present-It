@@ -4,6 +4,7 @@ import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -62,6 +63,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Log.i(TAG, "getemailaccount-" + pEmailAccount);
 
 
+        if (null != pEmailAccount) {
+            Log.d(TAG, "performauthcheck -" + pEmailAccount);
+            performAuthCheck(pEmailAccount);
+        } else {
+            selectAccount();
+        }
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.navList);
         if(mDrawerList==null)
@@ -131,10 +138,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onResume();
 
         if (null != pEmailAccount) {
+            Log.d(TAG, "performauthcheck -" + pEmailAccount);
             performAuthCheck(pEmailAccount);
         } else {
             selectAccount();
         }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -171,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 break;
             case R.id.action_reload:
-                //mConferenceListFragment.reload();
+
                 break;
         }
         // Activate the navigation drawer toggle
@@ -184,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
      */
     private void selectAccount() {
         Account[] accounts = AccountUtils.getGoogleAccounts(this);
-       // String emailAccount = AccountUtils.getEmailAccount(this);
+        // String emailAccount = AccountUtils.getEmailAccount(this);
         int numOfAccount = accounts.length;
         Log.i(TAG, "number of google accounts "+numOfAccount);
         switch (numOfAccount) {
@@ -271,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        
+
     }
 
     /**
@@ -350,16 +371,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
             switch(position) {
                 case 0:
                     mActivityTitle = "Profile";
                     tx.replace(R.id.main, ProfileFragment.newInstance(MainActivity.this));
-                break;
+                    break;
                 case 1:
                     mActivityTitle = "Courses";
                     tx.replace(R.id.main, CoursesFragment.newInstance(MainActivity.this));
-                break;
+                    break;
                 default:
                     break;
             }
